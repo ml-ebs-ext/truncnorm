@@ -1,5 +1,5 @@
-# truncnorm
-R package implementing density, probability, quantile and random number generation functions for the truncated normal distribution.
+# Truncated truncnorm package
+Fork of https://github.com/olafmersmann/truncnorm that only preserves a subset of the functionality (part of rtruncnorm).
 
 ## Install from github
 
@@ -8,8 +8,5 @@ package):
 
 ```splus
 library("devtools")
-install_github("olafmersmann/truncnorm")
+install_github("ml-ebs-ext/truncnorm")
 ```
-
-[![CRAN Status Badge](http://www.r-pkg.org/badges/version/truncnorm)](https://cran.r-project.org/package=truncnorm)
-[![CRAN Downloads](http://cranlogs.r-pkg.org/badges/truncnorm)](https://cran.r-project.org/package=truncnorm)

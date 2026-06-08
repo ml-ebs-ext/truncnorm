@@ -1,15 +1,15 @@
 Package: truncnorm
 Version: 1.0-9
-Title: Truncated Normal Distribution
+Title: Truncated Fork of the Truncated Normal Distribution package
 Description: Density, probability, quantile and random number
         generation functions for the truncated normal distribution.
-Authors@R: c(person("Olaf", "Mersmann", role=c("aut", "cre"), 
-                    email="olafm@p-value.net"),
+Authors@R: c(person("Olaf", "Mersmann", role=c("aut")),
              person("Heike", "Trautmann", role=c("aut")),
              person("Detlef", "Steuer", role=c("aut")),
-             person("Björn", "Bornkamp", role=c("aut")))
+             person("Björn", "Bornkamp", role=c("aut")),
+             person("Miguel", "Lechon", role=c("cre"), email="miguel.lechon.ext@boehringer-ingelheim.com"))
 URL: https://github.com/olafmersmann/truncnorm
-BugReports: https://github.com/olafmersmann/truncnorm/issues
+BugReports: https://github.com/ml-ebs-ext/truncnorm/issues
 Depends: R (>= 3.4.0)
 Suggests: testthat
 License: GPL (>= 2)
