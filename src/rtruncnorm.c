@@ -6,12 +6,7 @@
  *  Olaf Mersmann    <olafm@statistik.uni-dortmund.de>
  */
 
-#include <R.h>
-#include <Rdefines.h>
 #include <Rmath.h>
-#include <Rinternals.h>
-#include <R_ext/Applic.h>
-#include <float.h>
 
 #include "sexp_macros.h"
 
@@ -23,14 +18,6 @@
 #ifndef MAX
 #define MAX(A, B) ((A > B) ? (A) : (B))
 #endif
-
-#include <R.h>
-#include <Rdefines.h>
-#include <Rmath.h>
-#include <Rinternals.h>
-#include <R_ext/Lapack.h>
-#include <R_ext/BLAS.h>
-#include <R_ext/Applic.h>
 
 #ifdef DEBUG
 #define SAMPLER_DEBUG(N, A, B) Rprintf("%8s(%f, %f)\n", N, A, B)
