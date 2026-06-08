@@ -6,24 +6,9 @@
  *  Olaf Mersmann    <olafm@statistik.uni-dortmund.de>
  */
 
-#include <Rmath.h>
-
-/*
- * sexp_macros.h - helper macros for SEXPs
- *
- * Collection of useful macros to handle S expressions. Most of these
- * are used to unpack arguments passed in via the .Call() or
- * .External() interface.
- *
- * Author:
- *   Olaf Mersmann (OME) <olafm@statistik.tu-dortmund.de>
- */
-
-#if !defined(__SEXP_MACROS_H__)
-#define __SEXP_MACROS_H__
-
 #include <R.h>
 #include <Rinternals.h>
+#include <Rmath.h>
 
 #define CHECK_ARG_IS_REAL_VECTOR(A)					\
     if (!isReal(A) || !isVector(A))					\
@@ -47,10 +32,6 @@
 #define UNPACK_INT(S, I)			\
     CHECK_ARG_IS_INT_VECTOR(S);			\
     int I = INTEGER(S)[0];			\
-
-#endif
-
-/* End of #include "sexp_macros.h" */
 
 #define ALLOC_REAL_VECTOR(S, D, N)                                             \
   SEXP S;                                                                      \
