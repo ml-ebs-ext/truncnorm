@@ -10,52 +10,50 @@
 #include <Rinternals.h>
 #include <Rmath.h>
 
-#define CHECK_ARG_IS_REAL_VECTOR(A)					\
+#define RTN_CHECK_ARG_IS_REAL_VECTOR(A)					\
     if (!isReal(A) || !isVector(A))					\
 	error("Argument '" #A "' is not a real vector.");
 
-#define CHECK_ARG_IS_INT_VECTOR(A)					\
+#define RTN_CHECK_ARG_IS_INT_VECTOR(A)					\
     if (!isInteger(A) || !isVector(A))					\
 	error("Argument '" #A "' is not an integer vector.");
 
 /*
  * Unpack a real vector stored in SEXP S.
  */
-#define UNPACK_REAL_VECTOR(S, D, N)             \
-    CHECK_ARG_IS_REAL_VECTOR(S);		\
+#define RTN_UNPACK_REAL_VECTOR(S, D, N)             \
+    RTN_CHECK_ARG_IS_REAL_VECTOR(S);		\
     double *D = REAL(S);			\
     const R_len_t N = length(S);                   
 
 /*
  * Unpack a single integer stored in SEXP S.
  */
-#define UNPACK_INT(S, I)			\
-    CHECK_ARG_IS_INT_VECTOR(S);			\
+#define RTN_UNPACK_INT(S, I)			\
+    RTN_CHECK_ARG_IS_INT_VECTOR(S);			\
     int I = INTEGER(S)[0];			\
 
-#define ALLOC_REAL_VECTOR(S, D, N)                                             \
+#define RTN_ALLOC_REAL_VECTOR(S, D, N)                                             \
   SEXP S;                                                                      \
   PROTECT(S = allocVector(REALSXP, N));                                        \
   double *D = REAL(S);
 
-#ifndef MAX
-#define MAX(A, B) ((A > B) ? (A) : (B))
-#endif
+#define RTN_MAX(A, B) ((A > B) ? (A) : (B))
 
 #ifdef DEBUG
-#define SAMPLER_DEBUG(N, A, B) Rprintf("%8s(%f, %f)\n", N, A, B)
+#define RTN_SAMPLER_DEBUG(N, A, B) Rprintf("%8s(%f, %f)\n", N, A, B)
 #else
-#define SAMPLER_DEBUG(N, A, B)
+#define RTN_SAMPLER_DEBUG(N, A, B)
 #endif
 
-static const double t1 = 0.15;
-static const double t2 = 2.18;
-static const double t3 = 0.725;
-static const double t4 = 0.45;
+static const double RTN_t1 = 0.15;
+static const double RTN_t2 = 2.18;
+static const double RTN_t3 = 0.725;
+static const double RTN_t4 = 0.45;
 
 /* Exponential rejection sampling (a,inf) */
-static R_INLINE double ers_a_inf(double a) {
-  SAMPLER_DEBUG("ers_a_inf", a, R_PosInf);
+static R_INLINE double RTN_ers_a_inf(double a) {
+  RTN_SAMPLER_DEBUG("RTN_ers_a_inf", a, R_PosInf);
   const double ainv = 1.0 / a;
   double x, rho;
   do {
@@ -66,8 +64,8 @@ static R_INLINE double ers_a_inf(double a) {
 }
 
 /* Exponential rejection sampling (a,b) */
-static R_INLINE double ers_a_b(double a, double b) {
-  SAMPLER_DEBUG("ers_a_b", a, b);
+static R_INLINE double RTN_ers_a_b(double a, double b) {
+  RTN_SAMPLER_DEBUG("RTN_ers_a_b", a, b);
   const double ainv = 1.0 / a;
   double x, rho;
   do {
@@ -78,8 +76,8 @@ static R_INLINE double ers_a_b(double a, double b) {
 }
 
 /* Normal rejection sampling (a,b) */
-static R_INLINE double nrs_a_b(double a, double b) {
-  SAMPLER_DEBUG("nrs_a_b", a, b);
+static R_INLINE double RTN_nrs_a_b(double a, double b) {
+  RTN_SAMPLER_DEBUG("RTN_nrs_a_b", a, b);
   double x = -DBL_MAX;
   while (x < a || x > b) {
     x = rnorm(0, 1);
@@ -88,8 +86,8 @@ static R_INLINE double nrs_a_b(double a, double b) {
 }
 
 /* Normal rejection sampling (a,inf) */
-static R_INLINE double nrs_a_inf(double a) {
-  SAMPLER_DEBUG("nrs_a_inf", a, R_PosInf);
+static R_INLINE double RTN_nrs_a_inf(double a) {
+  RTN_SAMPLER_DEBUG("RTN_nrs_a_inf", a, R_PosInf);
   double x = -DBL_MAX;
   while (x < a) {
     x = rnorm(0, 1);
@@ -98,8 +96,8 @@ static R_INLINE double nrs_a_inf(double a) {
 }
 
 /* Half-normal rejection sampling */
-double hnrs_a_b(double a, double b) {
-  SAMPLER_DEBUG("hnrs_a_b", a, b);
+static double RTN_hnrs_a_b(double a, double b) {
+  RTN_SAMPLER_DEBUG("RTN_hnrs_a_b", a, b);
   double x = a - 1.0;
   while (x < a || x > b) {
     x = rnorm(0, 1);
@@ -109,8 +107,8 @@ double hnrs_a_b(double a, double b) {
 }
 
 /* Uniform rejection sampling */
-static R_INLINE double urs_a_b(double a, double b) {
-  SAMPLER_DEBUG("urs_a_b", a, b);
+static R_INLINE double RTN_urs_a_b(double a, double b) {
+  RTN_SAMPLER_DEBUG("RTN_urs_a_b", a, b);
   const double phi_a = dnorm(a, 0.0, 1.0, FALSE);
   double x = 0.0;
 
@@ -123,22 +121,22 @@ static R_INLINE double urs_a_b(double a, double b) {
 }
 
 /* Previously this was refered to as type 1 sampling: */
-static inline double r_lefttruncnorm(double a, double mean, double sd) {
+static inline double RTN_r_lefttruncnorm(double a, double mean, double sd) {
   const double alpha = (a - mean) / sd;
-  if (alpha < t4) {
-    return mean + sd * nrs_a_inf(alpha);
+  if (alpha < RTN_t4) {
+    return mean + sd * RTN_nrs_a_inf(alpha);
   } else {
-    return mean + sd * ers_a_inf(alpha);
+    return mean + sd * RTN_ers_a_inf(alpha);
   }
 }
 
-static R_INLINE double r_righttruncnorm(double b, double mean, double sd) {
+static R_INLINE double RTN_r_righttruncnorm(double b, double mean, double sd) {
   const double beta = (b - mean) / sd;
   /* Exploit symmetry: */
-  return mean - sd * r_lefttruncnorm(-beta, 0.0, 1.0);
+  return mean - sd * RTN_r_lefttruncnorm(-beta, 0.0, 1.0);
 }
 
-static R_INLINE double r_truncnorm(double a, double b, double mean, double sd) {
+static R_INLINE double RTN_r_truncnorm(double a, double b, double mean, double sd) {
   const double alpha = (a - mean) / sd;
   const double beta = (b - mean) / sd;
   const double phi_a = dnorm(alpha, 0.0, 1.0, FALSE);
@@ -146,29 +144,29 @@ static R_INLINE double r_truncnorm(double a, double b, double mean, double sd) {
   if (beta <= alpha) {
     return NA_REAL;
   } else if (alpha <= 0 && 0 <= beta) { /* 2 */
-    if (phi_a <= t1 || phi_b <= t1) {   /* 2 (a) */
-      return mean + sd * nrs_a_b(alpha, beta);
+    if (phi_a <= RTN_t1 || phi_b <= RTN_t1) {   /* 2 (a) */
+      return mean + sd * RTN_nrs_a_b(alpha, beta);
     } else { /* 2 (b) */
-      return mean + sd * urs_a_b(alpha, beta);
+      return mean + sd * RTN_urs_a_b(alpha, beta);
     }
   } else if (alpha > 0) {      /* 3 */
-    if (phi_a / phi_b <= t2) { /* 3 (a) */
-      return mean + sd * urs_a_b(alpha, beta);
+    if (phi_a / phi_b <= RTN_t2) { /* 3 (a) */
+      return mean + sd * RTN_urs_a_b(alpha, beta);
     } else {
-      if (alpha < t3) { /* 3 (b) */
-        return mean + sd * hnrs_a_b(alpha, beta);
+      if (alpha < RTN_t3) { /* 3 (b) */
+        return mean + sd * RTN_hnrs_a_b(alpha, beta);
       } else { /* 3 (c) */
-        return mean + sd * ers_a_b(alpha, beta);
+        return mean + sd * RTN_ers_a_b(alpha, beta);
       }
     }
   } else {                     /* 3s */
-    if (phi_b / phi_a <= t2) { /* 3s (a) */
-      return mean - sd * urs_a_b(-beta, -alpha);
+    if (phi_b / phi_a <= RTN_t2) { /* 3s (a) */
+      return mean - sd * RTN_urs_a_b(-beta, -alpha);
     } else {
-      if (beta > -t3) { /* 3s (b) */
-        return mean - sd * hnrs_a_b(-beta, -alpha);
+      if (beta > -RTN_t3) { /* 3s (b) */
+        return mean - sd * RTN_hnrs_a_b(-beta, -alpha);
       } else { /* 3s (c) */
-        return mean - sd * ers_a_b(-beta, -alpha);
+        return mean - sd * RTN_ers_a_b(-beta, -alpha);
       }
     }
   }
@@ -176,16 +174,16 @@ static R_INLINE double r_truncnorm(double a, double b, double mean, double sd) {
 
 SEXP C_do_rtruncnorm(SEXP s_n, SEXP s_a, SEXP s_b, SEXP s_mean, SEXP s_sd) {
   R_len_t i, nn;
-  UNPACK_INT(s_n, n);
+  RTN_UNPACK_INT(s_n, n);
   if (NA_INTEGER == n)
     error("n is NA - aborting.");
-  UNPACK_REAL_VECTOR(s_a, a, n_a);
-  UNPACK_REAL_VECTOR(s_b, b, n_b);
-  UNPACK_REAL_VECTOR(s_mean, mean, n_mean);
-  UNPACK_REAL_VECTOR(s_sd, sd, n_sd);
+  RTN_UNPACK_REAL_VECTOR(s_a, a, n_a);
+  RTN_UNPACK_REAL_VECTOR(s_b, b, n_b);
+  RTN_UNPACK_REAL_VECTOR(s_mean, mean, n_mean);
+  RTN_UNPACK_REAL_VECTOR(s_sd, sd, n_sd);
 
-  nn = MAX(n, MAX(MAX(n_a, n_b), MAX(n_mean, n_sd)));
-  ALLOC_REAL_VECTOR(s_ret, ret, nn);
+  nn = RTN_MAX(n, RTN_MAX(RTN_MAX(n_a, n_b), RTN_MAX(n_mean, n_sd)));
+  RTN_ALLOC_REAL_VECTOR(s_ret, ret, nn);
 
   GetRNGstate();
   for (i = 0; i < nn; ++i) {
@@ -195,11 +193,11 @@ SEXP C_do_rtruncnorm(SEXP s_n, SEXP s_a, SEXP s_b, SEXP s_mean, SEXP s_sd) {
     const double csd = sd[i % n_sd];
 
     if (R_FINITE(ca) && R_FINITE(cb)) {
-      ret[i] = r_truncnorm(ca, cb, cmean, csd);
+      ret[i] = RTN_r_truncnorm(ca, cb, cmean, csd);
     } else if (R_NegInf == ca && R_FINITE(cb)) {
-      ret[i] = r_righttruncnorm(cb, cmean, csd);
+      ret[i] = RTN_r_righttruncnorm(cb, cmean, csd);
     } else if (R_FINITE(ca) && R_PosInf == cb) {
-      ret[i] = r_lefttruncnorm(ca, cmean, csd);
+      ret[i] = RTN_r_lefttruncnorm(ca, cmean, csd);
     } else if (R_NegInf == ca && R_PosInf == cb) {
       ret[i] = rnorm(cmean, csd);
     } else {
@@ -212,7 +210,13 @@ SEXP C_do_rtruncnorm(SEXP s_n, SEXP s_a, SEXP s_b, SEXP s_mean, SEXP s_sd) {
   return s_ret;
 }
 
-extern SEXP C_do_rtruncnorm(SEXP, SEXP, SEXP, SEXP, SEXP);
+#undef RTN_CHECK_ARG_IS_REAL_VECTOR
+#undef RTN_CHECK_ARG_IS_INT_VECTOR
+#undef RTN_UNPACK_REAL_VECTOR
+#undef RTN_UNPACK_INT
+#undef RTN_ALLOC_REAL_VECTOR
+#undef RTN_MAX
+#undef RTN_SAMPLER_DEBUG
 
 static const R_CallMethodDef R_CallDef[] = {
     {"C_do_rtruncnorm", (DL_FUNC) &C_do_rtruncnorm, 5},
