@@ -164,7 +164,7 @@ static R_INLINE double r_truncnorm(double a, double b, double mean, double sd) {
   }
 }
 
-SEXP do_rtruncnorm(SEXP s_n, SEXP s_a, SEXP s_b, SEXP s_mean, SEXP s_sd) {
+SEXP C_do_rtruncnorm(SEXP s_n, SEXP s_a, SEXP s_b, SEXP s_mean, SEXP s_sd) {
   R_len_t i, nn;
   UNPACK_INT(s_n, n);
   if (NA_INTEGER == n)

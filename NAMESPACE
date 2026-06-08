@@ -1,2 +1,2 @@
 export(rtruncnorm)
-useDynLib(truncnorm, .registration = TRUE, .fixes = "C_")
+useDynLib(truncnorm, .registration = TRUE)

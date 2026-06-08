@@ -7,10 +7,10 @@
 
 #define CALLDEF(name, n)  {#name, (DL_FUNC) &name, n}
 
-extern SEXP do_rtruncnorm(SEXP, SEXP, SEXP, SEXP, SEXP);
+extern SEXP C_do_rtruncnorm(SEXP, SEXP, SEXP, SEXP, SEXP);
 
 static const R_CallMethodDef R_CallDef[] = {
-    CALLDEF(do_rtruncnorm, 5),
+    CALLDEF(C_do_rtruncnorm, 5),
     {NULL, NULL, 0}
 };
 
