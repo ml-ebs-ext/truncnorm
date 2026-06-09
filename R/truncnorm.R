@@ -7,7 +7,7 @@
 ##  Olaf Mersmann    <olafm@statistik.uni-dortmund.de>
 ##
 
-rtruncnorm <- function(n, a=-Inf, b=Inf, mean=0, sd=1) {
+truncnorm__rtruncnorm <- function(n, a=-Inf, b=Inf, mean=0, sd=1) {
   stopifnot(length(a) > 0,
             length(b) > 0,
             length(mean) > 0,

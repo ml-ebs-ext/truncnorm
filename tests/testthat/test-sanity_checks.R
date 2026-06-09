@@ -4,7 +4,7 @@ context("sanity checks")
 ## Sanity checks on random number generators
 check_r <- function(a, b, mean, sd, n=10000) {
   prefix <- sprintf("R: a=%f, b=%f, mean=%f, sd=%f", a, b, mean, sd)
-  x <- rtruncnorm(n, a, b, mean, sd)
+  x <- truncnorm__rtruncnorm(n, a, b, mean, sd)
   e.x <- mean(x)
 
   ## FIXME: Really sample from open intervall?

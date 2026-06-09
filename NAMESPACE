@@ -1,2 +1,2 @@
-export(rtruncnorm)
+export(truncnorm__rtruncnorm)
 useDynLib(truncnorm, .registration = TRUE)
